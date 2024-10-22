@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "223397251529",
+    "project_id": "seam-flutter",
+    "storage_bucket": "seam-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223397251529:android:6267e71acfc00316210018",
+        "android_client_info": {
+          "package_name": "com.seam.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8Ch9uXzbk6f8QrCWhkPyh7qYYfISO_P0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
