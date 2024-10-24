@@ -149,8 +149,7 @@ class _CatatState extends State<Catat> {
                       DateFormat('yyyy-MM-dd').format(tanggal);
 
                   return ListTile(
-                    title: Text(
-                        'Tanggal    : $formattedDate'), // Tampilkan tanggal yang sudah diformat
+                    title: Text('Tanggal    : $formattedDate'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
