@@ -35,7 +35,7 @@ class SettingsPage extends StatelessWidget {
                 padding: EdgeInsets.all(20),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.1,
-                  child: Column(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(

@@ -22,6 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
           if (docSnapshot.exists) {
             final userData = docSnapshot.data() ?? {};
+            print(docSnapshot.data());
             final userModel = UserModel.fromMap({
               ...userData,
               'uid': user.uid,
