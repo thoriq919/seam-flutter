@@ -81,8 +81,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '223397251529',
     projectId: 'seam-flutter',
     authDomain: 'seam-flutter.firebaseapp.com',
-    databaseURL:
-        'https://seam-flutter-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'seam-flutter.appspot.com',
   );
 }
