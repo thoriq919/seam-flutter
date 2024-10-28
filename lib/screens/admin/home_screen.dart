@@ -1,5 +1,6 @@
 // home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:seam_flutter/realtime.dart';
 import 'package:seam_flutter/screens/admin/dashboard.dart';
 import 'package:seam_flutter/screens/admin/pegawai/pegawai_screen.dart';
 import 'package:seam_flutter/screens/admin/settings/setting_screen.dart';
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const DashboardPage(),
     const PegawaiScreen(),
     const SettingsPage(),
+    const Realtime(),
   ];
 
   void _onItemTapped(int index) {
@@ -70,6 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.person),
                     label: 'Pegawai',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.computer),
+                    label: 'Monitoring',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.settings),
