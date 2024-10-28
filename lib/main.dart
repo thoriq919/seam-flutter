@@ -6,6 +6,7 @@ import 'package:seam_flutter/firebase_options.dart';
 import 'package:seam_flutter/screens/admin/home_screen.dart';
 import 'package:seam_flutter/screens/auth/login_screen.dart';
 import 'package:seam_flutter/screens/auth/register_screen.dart';
+import 'package:seam_flutter/realtime.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/home': (context) => const HomeScreen(),
           '/register': (context) => const RegisterScreen(),
+          '/monitoring': (context) => const Realtime(),
         },
       ),
     );
