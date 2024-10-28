@@ -1,4 +1,4 @@
-package com.example.seam_flutter
+package com.seam.app
 
 import io.flutter.embedding.android.FlutterActivity
 

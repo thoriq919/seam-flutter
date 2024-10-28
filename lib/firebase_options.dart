@@ -49,6 +49,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '223397251529',
     projectId: 'seam-flutter',
     authDomain: 'seam-flutter.firebaseapp.com',
+    databaseURL:
+        'https://seam-flutter-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'seam-flutter.appspot.com',
   );
 
@@ -57,6 +59,8 @@ class DefaultFirebaseOptions {
     appId: '1:223397251529:android:6267e71acfc00316210018',
     messagingSenderId: '223397251529',
     projectId: 'seam-flutter',
+    databaseURL:
+        'https://seam-flutter-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'seam-flutter.appspot.com',
   );
 
@@ -65,8 +69,10 @@ class DefaultFirebaseOptions {
     appId: '1:223397251529:ios:f6ecd46bfaa9fc06210018',
     messagingSenderId: '223397251529',
     projectId: 'seam-flutter',
+    databaseURL:
+        'https://seam-flutter-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'seam-flutter.appspot.com',
-    iosBundleId: 'com.example.seamFlutter',
+    iosBundleId: 'com.seam.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
