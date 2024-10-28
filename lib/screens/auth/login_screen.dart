@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_event.dart';
 import 'package:seam_flutter/blocs/auth/auth_state.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,12 +20,37 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _canTriggerEvent = true; // Tambahkan flag untuk mengontrol trigger
+  final FirebaseInAppMessaging _inAppMessaging =
+      FirebaseInAppMessaging.instance;
+
+  // Tambahkan timer untuk reset flag
+  Timer? _triggerResetTimer;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _triggerResetTimer?.cancel(); // Jangan lupa cancel timer
     super.dispose();
+  }
+
+  // Fungsi untuk menghandle trigger event dengan cooldown
+  void _handleTriggerEvent() {
+    if (_canTriggerEvent) {
+      _inAppMessaging.triggerEvent("login_success");
+      _canTriggerEvent = false; // Nonaktifkan trigger
+
+      // Reset flag setelah beberapa waktu (misal 5 detik)
+      _triggerResetTimer?.cancel();
+      _triggerResetTimer = Timer(const Duration(seconds: 5), () {
+        if (mounted) {
+          setState(() {
+            _canTriggerEvent = true;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -30,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
+          _handleTriggerEvent();
           if (state.user.role == 'pegawai') {
             print('State is authenticated, navigating to pegawai home');
             Navigator.of(context).pushReplacementNamed('/home');

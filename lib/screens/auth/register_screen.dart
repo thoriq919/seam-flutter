@@ -8,6 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_event.dart';
 import 'package:seam_flutter/blocs/auth/auth_state.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -28,6 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  String? _deviceToken;
 
   Future<void> _pickAndUploadImage() async {
     try {
@@ -60,6 +64,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getDeviceToken();
+  }
+
+  Future<void> _getDeviceToken() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      setState(() {
+        _deviceToken = token;
+      });
+      print('Device Token: $_deviceToken'); // Tampilkan token di console
+    } catch (e) {
+      print('Error getting device token: $e');
+    }
+  }
+
+  Future<void> _sendCloudMessage() async {
+    const String serverKey =
+        'ya29.a0AeDClZAdWhJW523K3NltI5Giydj-BNc_YyvGAMzuSywYLDZhgXreStIjRVsA_7bax-d4wkA4E17h2D-P8M2hIgPZ2HQCo5l3IX4AGFjmx_83iSMfaiZhy67fKrAyLBrTrnw5TvY_lqkQljVH8skI6jIOwG2BP73ohajfMtgtaCgYKAXISARISFQHGX2MiKD_T3jnobcrs1vny8UK36A0175'; // Replace with your Firebase server key
+    const String url =
+        'https://fcm.googleapis.com/v1/projects/seam-flutter/messages:send';
+
+    final Map<String, dynamic> message = {
+      "message": {
+        "token":
+            "dw98mSUPS7ynx8rZ8yDss-:APA91bHXR5FjFxYDAi8J4h1HqhZMCdpnpTRn78sSGCPfoXGDr_GGMFxvmuEiJRaofkKSaKzvNzX2HQz7rB5SqGRCI7D0RWUUX_vdOsQ7tYzYhYRH0p7TnSjOhmYSE9IowSYOyfHgfdpB",
+        "notification": {
+          "title": "Pegawai Baru",
+          "body": "Terdapat Pegawai Baru yang Terdaftar",
+        }
+      }
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $serverKey',
+        },
+        body: jsonEncode(message),
+      );
+
+      if (response.statusCode == 200) {
+        print('FCM message sent successfully');
+      } else {
+        print('Failed to send FCM message. Status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending FCM message: $e');
     }
   }
 
