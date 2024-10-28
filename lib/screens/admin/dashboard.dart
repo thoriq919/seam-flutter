@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
+import 'package:seam_flutter/page/realtime.dart'; // pastikan untuk mengimpor `Realtime`
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -30,7 +31,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                 padding: const EdgeInsets.all(20),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.7,
-                  child: Text('data'),
+                  child: const Realtime(), // tampilkan `Realtime` widget
                 ),
               ),
               Container(

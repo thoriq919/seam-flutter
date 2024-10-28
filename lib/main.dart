@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/firebase_options.dart';
+import 'package:seam_flutter/page/realtime.dart';
 import 'package:seam_flutter/screens/admin/home_screen.dart';
 import 'package:seam_flutter/screens/auth/login_screen.dart';
 import 'package:seam_flutter/screens/auth/register_screen.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const HomeScreen(),
           '/register': (context) => const RegisterScreen(),
           '/catat': (context) => const Catat(),
+          '/monitoring' : (context) => const Realtime(),
         },
       ),
     );
