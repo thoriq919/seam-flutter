@@ -33,37 +33,41 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   }
 
   void _fetchData() {
-    _databaseReference.onValue.listen((event) {
-      final dataSnapshot = event.snapshot;
-      final historyList = <Map<String, String>>[];
+  _databaseReference.onValue.listen((event) {
+    final dataSnapshot = event.snapshot;
+    final historyList = <Map<String, String>>[];
 
-      if (dataSnapshot.exists) {
-        dataSnapshot.children.forEach((childSnapshot) {
-          final lembap = childSnapshot.child('tingkat_kelembapan').value as String?;
-          final waktu = childSnapshot.child('waktu').value as int?;
-          final id = childSnapshot.key;
+    if (dataSnapshot.exists) {
+      dataSnapshot.children.forEach((childSnapshot) {
+        final lembap = childSnapshot.child('tingkat_kelembapan').value as String?;
+        final waktu = childSnapshot.child('waktu').value as int?;
+        final id = childSnapshot.key;
 
-          if (lembap != null && waktu != null && id != null) {
-            final formattedTime = DateFormat('HH:mm')
-                .format(DateTime.fromMillisecondsSinceEpoch(waktu));
+        if (lembap != null && waktu != null && id != null) {
+          final formattedTime = DateFormat('HH:mm')
+              .format(DateTime.fromMillisecondsSinceEpoch(waktu));
 
-            historyList.add({
-              'id': id,
-              'tingkat_kelembapan': lembap,
-              'waktu': formattedTime,
-            });
-          }
-        });
-      }
-
-      setState(() {
-        humidityHistory = historyList;
-        if (historyList.isNotEmpty) {
-          currentHumidity = historyList.first['tingkat_kelembapan'] ?? '0';
-          currentTime = historyList.first['waktu'] ?? '';
+          historyList.add({
+            'id': id,
+            'tingkat_kelembapan': lembap,
+            'waktu': formattedTime,
+            'epoch': waktu.toString(),
+          });
         }
       });
+
+      // Sort by epoch time in descending order
+      historyList.sort((a, b) => int.parse(b['epoch']!).compareTo(int.parse(a['epoch']!)));
+    }
+
+    setState(() {
+      humidityHistory = historyList;
+      if (historyList.isNotEmpty) {
+        currentHumidity = historyList.first['tingkat_kelembapan'] ?? '0';
+        currentTime = historyList.first['waktu'] ?? '';
+      }
     });
+  });
   }
 
   @override
@@ -232,12 +236,22 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                             ),
                           ],
                         ),
-                      ),
+                      ), 
                     ],
                   ),
                 ),
               ),
             ),
+            Container(
+                        padding:EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: ColorTheme.primary,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+        
+      ),)
           ],
         ),
       ),
