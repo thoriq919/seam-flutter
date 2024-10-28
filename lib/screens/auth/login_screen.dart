@@ -31,10 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state is Authenticated) {
           if (state.user.role == 'pegawai') {
-            print('State is authenticated, navigating to pegawai home');
-            Navigator.of(context).pushReplacementNamed('/home');
           } else if (state.user.role == 'admin') {
-            print('Admin');
+            Navigator.of(context).pushReplacementNamed('/home');
           }
         }
         if (state is AuthError) {
