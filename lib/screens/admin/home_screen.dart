@@ -1,10 +1,8 @@
-// home_screen.dart
 import 'dart:async';
 
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:seam_flutter/page/catat.dart';
-import 'package:seam_flutter/page/realtime.dart';
 import 'package:seam_flutter/screens/admin/dashboard.dart';
 import 'package:seam_flutter/screens/admin/pegawai/pegawai_screen.dart';
 import 'package:seam_flutter/screens/admin/settings/setting_screen.dart';
@@ -19,26 +17,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  bool _canTriggerEvent = true; // Tambahkan flag untuk mengontrol trigger
-  final FirebaseInAppMessaging _inAppMessaging =
+  bool _canTriggerEvent = true;   final FirebaseInAppMessaging _inAppMessaging =
       FirebaseInAppMessaging.instance;
 
-  // Tambahkan timer untuk reset flag
-  Timer? _triggerResetTimer;
+    Timer? _triggerResetTimer;
   @override
   void initState() {
     super.initState();
-    // Trigger event saat halaman dibuka
-    _handleTriggerEvent();
+        _handleTriggerEvent();
   }
 
   void _handleTriggerEvent() {
     if (_canTriggerEvent) {
       _inAppMessaging.triggerEvent("login_success");
-      _canTriggerEvent = false; // Nonaktifkan trigger
-
-      // Reset flag setelah beberapa waktu (misal 5 detik)
-      _triggerResetTimer?.cancel();
+      _canTriggerEvent = false; 
+            _triggerResetTimer?.cancel();
       _triggerResetTimer = Timer(const Duration(seconds: 5), () {
         if (mounted) {
           setState(() {
@@ -107,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     label: 'Pegawai',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.add),
+                    icon: Icon(Icons.note_add),
                     label: 'Catat',
                   ),
                   BottomNavigationBarItem(
