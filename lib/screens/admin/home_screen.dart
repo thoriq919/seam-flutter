@@ -1,5 +1,6 @@
 // home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:seam_flutter/page/catat.dart';
 import 'package:seam_flutter/screens/admin/dashboard.dart';
 import 'package:seam_flutter/screens/admin/pegawai/pegawai_screen.dart';
 import 'package:seam_flutter/screens/admin/settings/setting_screen.dart';
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const DashboardPage(),
     const PegawaiScreen(),
+    const Catat(),
     const SettingsPage(),
   ];
 
@@ -70,6 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.person),
                     label: 'Pegawai',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.add),
+                    label: 'Catat',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.settings),

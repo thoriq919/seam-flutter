@@ -96,6 +96,7 @@ class _CatatState extends State<Catat> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
+            const SizedBox(height: 30),
             TextField(
               controller: _idController,
               decoration: const InputDecoration(
@@ -110,10 +111,12 @@ class _CatatState extends State<Catat> {
               readOnly: true,
               onTap: () => _selectDate(context),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: _tinggiController,
               decoration: const InputDecoration(labelText: 'Tinggi Alpukat'),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: _diameterController,
               decoration: const InputDecoration(labelText: 'Diameter Alpukat'),
