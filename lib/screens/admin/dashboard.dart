@@ -25,6 +25,8 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   String currentHumidity = '0';
   String currentTime = '';
   List<Map<String, String>> humidityHistory = [];
+  Map<String, IconData> arrowDirections = {};
+  Map<String, Color> arrowColors = {}; // Store arrow colors for each entry
 
   @override
   void initState() {
@@ -33,41 +35,66 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   }
 
   void _fetchData() {
-  _databaseReference.onValue.listen((event) {
-    final dataSnapshot = event.snapshot;
-    final historyList = <Map<String, String>>[];
+    _databaseReference.onValue.listen((event) {
+      final dataSnapshot = event.snapshot;
+      final historyList = <Map<String, String>>[];
 
-    if (dataSnapshot.exists) {
-      dataSnapshot.children.forEach((childSnapshot) {
-        final lembap = childSnapshot.child('tingkat_kelembapan').value as String?;
-        final waktu = childSnapshot.child('waktu').value as int?;
-        final id = childSnapshot.key;
+      if (dataSnapshot.exists) {
+        dataSnapshot.children.forEach((childSnapshot) {
+          final lembap = childSnapshot.child('tingkat_kelembapan').value as String?;
+          final waktu = childSnapshot.child('waktu').value as int?;
+          final id = childSnapshot.key;
 
-        if (lembap != null && waktu != null && id != null) {
-          final formattedTime = DateFormat('HH:mm')
-              .format(DateTime.fromMillisecondsSinceEpoch(waktu));
+          if (lembap != null && waktu != null && id != null) {
+            final formattedTime = DateFormat('HH:mm')
+                .format(DateTime.fromMillisecondsSinceEpoch(waktu));
 
-          historyList.add({
-            'id': id,
-            'tingkat_kelembapan': lembap,
-            'waktu': formattedTime,
-            'epoch': waktu.toString(),
+            historyList.add({
+              'id': id,
+              'tingkat_kelembapan': lembap,
+              'waktu': formattedTime,
+              'epoch': waktu.toString(),
+            });
+          }
+        });
+
+        // Sort by epoch time in descending order
+        historyList.sort((a, b) => int.parse(b['epoch']!).compareTo(int.parse(a['epoch']!)));
+        
+        // Calculate arrow directions and colors by comparing adjacent entries
+        final newArrowDirections = <String, IconData>{};
+        final newArrowColors = <String, Color>{};
+        
+        for (int i = 0; i < historyList.length - 1; i++) {
+          final currentValue = double.parse(historyList[i]['tingkat_kelembapan'] ?? '0');
+          final previousValue = double.parse(historyList[i + 1]['tingkat_kelembapan'] ?? '0');
+          
+          final id = historyList[i]['id']!;
+          if (currentValue > previousValue) {
+            newArrowDirections[id] = Icons.arrow_upward;
+            newArrowColors[id] = Colors.green;
+          } else if (currentValue < previousValue) {
+            newArrowDirections[id] = Icons.arrow_downward;
+            newArrowColors[id] = Colors.red;
+          } else {
+            newArrowDirections[id] = Icons.remove;
+            newArrowColors[id] = Colors.grey; // Neutral color for no change
+          }
+        }
+
+        if (mounted) {
+          setState(() {
+            humidityHistory = historyList;
+            arrowDirections = newArrowDirections;
+            arrowColors = newArrowColors;
+            if (historyList.isNotEmpty) {
+              currentHumidity = historyList.first['tingkat_kelembapan'] ?? '0';
+              currentTime = historyList.first['waktu'] ?? '';
+            }
           });
         }
-      });
-
-      // Sort by epoch time in descending order
-      historyList.sort((a, b) => int.parse(b['epoch']!).compareTo(int.parse(a['epoch']!)));
-    }
-
-    setState(() {
-      humidityHistory = historyList;
-      if (historyList.isNotEmpty) {
-        currentHumidity = historyList.first['tingkat_kelembapan'] ?? '0';
-        currentTime = historyList.first['waktu'] ?? '';
       }
     });
-  });
   }
 
   @override
@@ -99,55 +126,55 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                           ],
                         ),
                         child: Column(
-  children: [
-    const Text(
-      'Kelembapan',
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    const SizedBox(height: 20),
-    SizedBox(
-      height: 200,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            height: 200,
-            width: 200,
-            child: CircularProgressIndicator(
-              value: double.parse(currentHumidity) / 100,
-              strokeWidth: 15,
-              color: ColorTheme.primary,
-              backgroundColor: Colors.grey.withOpacity(0.2),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '$currentHumidity%',
-                style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
-                  color: ColorTheme.primary,
-                ),
-              ),
-              Text(
-                currentTime,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  ],
-),
+                          children: [
+                            const Text(
+                              'Kelembapan',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 200,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 200,
+                                    width: 200,
+                                    child: CircularProgressIndicator(
+                                      value: double.parse(currentHumidity) / 100,
+                                      strokeWidth: 15,
+                                      color: ColorTheme.primary,
+                                      backgroundColor: Colors.grey.withOpacity(0.2),
+                                    ),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '$currentHumidity%',
+                                        style: TextStyle(
+                                          fontSize: 48,
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorTheme.primary,
+                                        ),
+                                      ),
+                                      Text(
+                                        currentTime,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       
                       const SizedBox(height: 20),
@@ -184,6 +211,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                               itemCount: humidityHistory.length,
                               itemBuilder: (context, index) {
                                 final humidity = humidityHistory[index];
+                                
                                 return ListTile(
                                   leading: Icon(
                                     Icons.water_drop,
@@ -199,12 +227,8 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                                     '${humidity['waktu']} WIB',
                                   ),
                                   trailing: Icon(
-                                    double.parse(humidity['tingkat_kelembapan'] ?? '0') >= 50
-                                        ? Icons.arrow_upward
-                                        : Icons.arrow_downward,
-                                    color: double.parse(humidity['tingkat_kelembapan'] ?? '0') >= 50
-                                        ? Colors.green
-                                        : Colors.red,
+                                    arrowDirections[humidity['id']] ?? Icons.remove,
+                                    color: arrowColors[humidity['id']] ?? Colors.grey,
                                   ),
                                   onTap: () {
                                     showDialog(
@@ -236,22 +260,22 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                             ),
                           ],
                         ),
-                      ), 
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
             Container(
-                        padding:EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: ColorTheme.primary,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-        
-      ),)
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: ColorTheme.primary,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
+                ),
+              ),
+            )
           ],
         ),
       ),
