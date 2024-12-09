@@ -42,11 +42,11 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
       if (dataSnapshot.exists) {
         dataSnapshot.children.forEach((childSnapshot) {
           final lembap =
-              childSnapshot.child('tingkat_kelembapan').value as String?;
+              (childSnapshot.child('tingkat_kelembapan').value ?? 0).toString();
           final waktu = childSnapshot.child('waktu').value as int?;
           final id = childSnapshot.key;
 
-          if (lembap != null && waktu != null && id != null) {
+          if (waktu != null && id != null) {
             final formattedTime = DateFormat('HH:mm')
                 .format(DateTime.fromMillisecondsSinceEpoch(waktu));
 
