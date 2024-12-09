@@ -25,6 +25,8 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   String currentHumidity = '0';
   String currentTime = '';
   List<Map<String, String>> humidityHistory = [];
+  Map<String, IconData> arrowDirections = {};
+  Map<String, Color> arrowColors = {}; // Store arrow colors for each entry
 
   @override
   void initState() {
@@ -40,11 +42,11 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
       if (dataSnapshot.exists) {
         dataSnapshot.children.forEach((childSnapshot) {
           final lembap =
-              (childSnapshot.child('tingkat_kelembapan').value ?? 0).toString();
+              childSnapshot.child('tingkat_kelembapan').value as String?;
           final waktu = childSnapshot.child('waktu').value as int?;
           final id = childSnapshot.key;
 
-          if (waktu != null && id != null) {
+          if (lembap != null && waktu != null && id != null) {
             final formattedTime = DateFormat('HH:mm')
                 .format(DateTime.fromMillisecondsSinceEpoch(waktu));
 
@@ -60,15 +62,42 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
         // Sort by epoch time in descending order
         historyList.sort(
             (a, b) => int.parse(b['epoch']!).compareTo(int.parse(a['epoch']!)));
-      }
 
-      setState(() {
-        humidityHistory = historyList;
-        if (historyList.isNotEmpty) {
-          currentHumidity = historyList.first['tingkat_kelembapan'] ?? '0';
-          currentTime = historyList.first['waktu'] ?? '';
+        // Calculate arrow directions and colors by comparing adjacent entries
+        final newArrowDirections = <String, IconData>{};
+        final newArrowColors = <String, Color>{};
+
+        for (int i = 0; i < historyList.length - 1; i++) {
+          final currentValue =
+              double.parse(historyList[i]['tingkat_kelembapan'] ?? '0');
+          final previousValue =
+              double.parse(historyList[i + 1]['tingkat_kelembapan'] ?? '0');
+
+          final id = historyList[i]['id']!;
+          if (currentValue > previousValue) {
+            newArrowDirections[id] = Icons.arrow_upward;
+            newArrowColors[id] = Colors.green;
+          } else if (currentValue < previousValue) {
+            newArrowDirections[id] = Icons.arrow_downward;
+            newArrowColors[id] = Colors.red;
+          } else {
+            newArrowDirections[id] = Icons.remove;
+            newArrowColors[id] = Colors.grey; // Neutral color for no change
+          }
         }
-      });
+
+        if (mounted) {
+          setState(() {
+            humidityHistory = historyList;
+            arrowDirections = newArrowDirections;
+            arrowColors = newArrowColors;
+            if (historyList.isNotEmpty) {
+              currentHumidity = historyList.first['tingkat_kelembapan'] ?? '0';
+              currentTime = historyList.first['waktu'] ?? '';
+            }
+          });
+        }
+      }
     });
   }
 
@@ -186,6 +215,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                               itemCount: humidityHistory.length,
                               itemBuilder: (context, index) {
                                 final humidity = humidityHistory[index];
+
                                 return ListTile(
                                   leading: Icon(
                                     Icons.water_drop,
@@ -201,18 +231,10 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                                     '${humidity['waktu']} WIB',
                                   ),
                                   trailing: Icon(
-                                    double.parse(humidity[
-                                                    'tingkat_kelembapan'] ??
-                                                '0') >=
-                                            50
-                                        ? Icons.arrow_upward
-                                        : Icons.arrow_downward,
-                                    color: double.parse(humidity[
-                                                    'tingkat_kelembapan'] ??
-                                                '0') >=
-                                            50
-                                        ? Colors.green
-                                        : Colors.red,
+                                    arrowDirections[humidity['id']] ??
+                                        Icons.remove,
+                                    color: arrowColors[humidity['id']] ??
+                                        Colors.grey,
                                   ),
                                   onTap: () {
                                     showDialog(
@@ -253,7 +275,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
               ),
             ),
             Container(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: ColorTheme.primary,
                 borderRadius: const BorderRadius.only(
