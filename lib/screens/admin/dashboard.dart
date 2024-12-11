@@ -26,7 +26,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   String currentTime = '';
   List<Map<String, String>> humidityHistory = [];
   Map<String, IconData> arrowDirections = {};
-  Map<String, Color> arrowColors = {}; // Store arrow colors for each entry
+  Map<String, Color> arrowColors = {};
   double averageHumidity = 0;
 
   @override
@@ -41,9 +41,6 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
       final historyList = <Map<String, String>>[];
       double totalHumidity = 0;
 
-      final oneWeekAgo =
-          DateTime.now().subtract(const Duration(days: 7)); // 7 hari lalu
-
       if (dataSnapshot.exists) {
         dataSnapshot.children.forEach((childSnapshot) {
           final lembap =
@@ -52,22 +49,19 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
           final id = childSnapshot.key;
 
           if (waktu != null && id != null) {
-            final entryDate = DateTime.fromMillisecondsSinceEpoch(waktu);
+            final entryDate =
+                DateTime.fromMillisecondsSinceEpoch(waktu * 1000, isUtc: true);
+            final formattedTime = DateFormat('HH:mm').format(entryDate);
+            final formattedDate = DateFormat('yyyy-MM-dd').format(entryDate);
 
-            // Filter hanya data dalam rentang satu minggu terakhir
-            if (entryDate.isAfter(oneWeekAgo)) {
-              final formattedTime = DateFormat('HH:mm').format(entryDate);
-              final formattedDate = DateFormat('yyyy-MM-dd').format(entryDate);
-
-              historyList.add({
-                'id': id,
-                'tingkat_kelembapan': lembap,
-                'waktu': formattedTime,
-                'tanggal': formattedDate,
-                'epoch': waktu.toString(),
-              });
-              totalHumidity += double.parse(lembap);
-            }
+            historyList.add({
+              'id': id,
+              'tingkat_kelembapan': lembap,
+              'waktu': formattedTime,
+              'tanggal': formattedDate,
+              'epoch': waktu.toString(),
+            });
+            totalHumidity += double.parse(lembap);
           }
         });
 

@@ -22,7 +22,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
           if (docSnapshot.exists) {
             final userData = docSnapshot.data() ?? {};
-            print(docSnapshot.data());
             final userModel = UserModel.fromMap({
               ...userData,
               'uid': user.uid,
@@ -51,19 +50,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInRequested>((event, emit) async {
       emit(AuthLoading());
       try {
-        print('Attempting sign in...');
         final userCredential = await _auth.signInWithEmailAndPassword(
           email: event.email,
           password: event.password,
         );
-        print('Sign in successful, fetching user data...');
 
         final docSnapshot = await _firestore
             .collection('users')
             .doc(userCredential.user?.uid)
             .get();
-
-        print('Firestore doc exists: ${docSnapshot.exists}');
 
         if (docSnapshot.exists) {
           final userData = docSnapshot.data() ?? {};
@@ -72,17 +67,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             'uid': userCredential.user?.uid,
             'email': userCredential.user?.email,
           });
-          print('Emitting Authenticated state');
           emit(Authenticated(userModel));
         } else {
-          print('User document not found in Firestore');
           emit(const AuthError('User data not found'));
         }
       } on FirebaseAuthException catch (e) {
-        print('Firebase Auth Error: ${e.message}');
         emit(AuthError(e.message ?? 'An error occurred'));
       } catch (e) {
-        print('Unexpected error: $e');
         emit(AuthError(e.toString()));
       }
     });
@@ -117,8 +108,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           });
           emit(Authenticated(userModel));
         }
-
-        print('successful registration');
       } on FirebaseAuthException catch (e) {
         emit(AuthError(e.message ?? 'An error occurred'));
       } catch (e) {

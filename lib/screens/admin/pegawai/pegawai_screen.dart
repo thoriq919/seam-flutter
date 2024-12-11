@@ -253,7 +253,6 @@ class PegawaiScreen extends StatelessWidget {
           .collection('users')
           .doc(user.uid)
           .delete();
-      print('User deleted successfully');
     } catch (e) {
       print('Error deleting user: $e');
     }
