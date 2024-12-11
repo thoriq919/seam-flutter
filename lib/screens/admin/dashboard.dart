@@ -27,6 +27,7 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   List<Map<String, String>> humidityHistory = [];
   Map<String, IconData> arrowDirections = {};
   Map<String, Color> arrowColors = {}; // Store arrow colors for each entry
+  double averageHumidity = 0;
 
   @override
   void initState() {
@@ -38,6 +39,10 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
     _databaseReference.onValue.listen((event) {
       final dataSnapshot = event.snapshot;
       final historyList = <Map<String, String>>[];
+      double totalHumidity = 0;
+
+      final oneWeekAgo =
+          DateTime.now().subtract(const Duration(days: 7)); // 7 hari lalu
 
       if (dataSnapshot.exists) {
         dataSnapshot.children.forEach((childSnapshot) {
@@ -47,21 +52,33 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
           final id = childSnapshot.key;
 
           if (waktu != null && id != null) {
-            final formattedTime = DateFormat('HH:mm')
-                .format(DateTime.fromMillisecondsSinceEpoch(waktu));
+            final entryDate = DateTime.fromMillisecondsSinceEpoch(waktu);
 
-            historyList.add({
-              'id': id,
-              'tingkat_kelembapan': lembap,
-              'waktu': formattedTime,
-              'epoch': waktu.toString(),
-            });
+            // Filter hanya data dalam rentang satu minggu terakhir
+            if (entryDate.isAfter(oneWeekAgo)) {
+              final formattedTime = DateFormat('HH:mm').format(entryDate);
+              final formattedDate = DateFormat('yyyy-MM-dd').format(entryDate);
+
+              historyList.add({
+                'id': id,
+                'tingkat_kelembapan': lembap,
+                'waktu': formattedTime,
+                'tanggal': formattedDate,
+                'epoch': waktu.toString(),
+              });
+              totalHumidity += double.parse(lembap);
+            }
           }
         });
 
         // Sort by epoch time in descending order
         historyList.sort(
             (a, b) => int.parse(b['epoch']!).compareTo(int.parse(a['epoch']!)));
+
+        // Calculate average humidity
+        if (historyList.isNotEmpty) {
+          averageHumidity = totalHumidity / historyList.length;
+        }
 
         // Calculate arrow directions and colors by comparing adjacent entries
         final newArrowDirections = <String, IconData>{};
@@ -177,6 +194,43 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                                     ],
                                   ),
                                 ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Average Humidity Indicator
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Rata-rata Kelembapan',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              '${averageHumidity.toStringAsFixed(2)}%',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                color: ColorTheme.primary,
                               ),
                             ),
                           ],
