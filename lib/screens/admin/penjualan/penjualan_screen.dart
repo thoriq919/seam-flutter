@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'index_screen.dart'; // Import the index screen
 
 class PenjualanScreen extends StatefulWidget {
   @override
@@ -150,11 +151,49 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
     }
   }
 
+  void saveTransaction() async {
+    final orderId = 'ORDER-${DateTime.now().millisecondsSinceEpoch}';
+    final pricePerKg = int.tryParse(priceController.text) ?? 0;
+    final quantityKg = int.tryParse(quantityController.text) ?? 0;
+    final amount = pricePerKg * quantityKg;
+    final name = nameController.text;
+
+    if (amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter valid price and quantity.')),
+      );
+      return;
+    }
+
+    await saveTransactionToFirestore(
+      name: name,
+      orderId: orderId,
+      amount: amount,
+      total: quantityKg,
+      status: 'saved',
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Transaction saved successfully!')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Midtrans Payment'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => IndexScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -187,9 +226,18 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: startPayment,
-              child: Text('Pay Now'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: startPayment,
+                  child: Text('Pay Now'),
+                ),
+                ElevatedButton(
+                  onPressed: saveTransaction,
+                  child: Text('Save Transaction'),
+                ),
+              ],
             ),
           ],
         ),
