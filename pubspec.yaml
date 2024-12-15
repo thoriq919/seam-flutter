@@ -44,8 +44,10 @@ dependencies:
   flutter_bloc: ^8.1.6
   flutter_local_notifications: ^17.2.4
   flutter_plugin_android_lifecycle: ^2.0.23
+  icon_decoration: ^2.1.0
   image_picker: ^1.1.2
   intl: ^0.19.0
+  percent_indicator: ^4.2.4
   url_launcher_android: ^6.3.13
 
 dev_dependencies:

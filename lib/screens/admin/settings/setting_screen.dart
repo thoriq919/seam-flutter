@@ -32,10 +32,10 @@ class SettingsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.all(20),
-                child: Container(
+                padding: const EdgeInsets.all(20),
+                child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.1,
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -74,7 +74,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 subtitle: Text(
                                   state.user.nama,
-                                  style: TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                               ListTile(
@@ -88,7 +88,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 subtitle: Text(
                                   state.user.email,
-                                  style: TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                               ListTile(
@@ -102,11 +102,11 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 subtitle: Text(
                                   state.user.telp,
-                                  style: TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 5, horizontal: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.white,

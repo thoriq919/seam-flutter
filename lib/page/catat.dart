@@ -18,7 +18,7 @@ class _CatatState extends State<Catat> {
   final TextEditingController _diameterController = TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
 
-  final Firestore firestore = Firestore();
+  final Firestore firestore = const Firestore();
 
   List<DocumentSnapshot> _listCatat = [];
 
@@ -51,8 +51,6 @@ class _CatatState extends State<Catat> {
         _tinggiController.text,
         _diameterController.text,
       );
-    } else {
-      print('Tanggal belum dipilih');
     }
     readCatat();
   }

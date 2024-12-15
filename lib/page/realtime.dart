@@ -27,7 +27,7 @@ class _RealtimeState extends State<Realtime> {
       final noteList = <Map<String, String>>[];
 
       if (dataSnapshot.exists) {
-        dataSnapshot.children.forEach((childSnapshot) {
+        for (var childSnapshot in dataSnapshot.children) {
           final lembap =
               childSnapshot.child('tingkat_kelembapan').value as String?;
           final waktu = childSnapshot.child('waktu').value as int?;
@@ -43,7 +43,7 @@ class _RealtimeState extends State<Realtime> {
               'waktu': formattedTime,
             });
           }
-        });
+        }
       }
 
       setState(() {
@@ -85,15 +85,14 @@ class _RealtimeState extends State<Realtime> {
       itemBuilder: (context, index) {
         final note = _notes[index];
         return ListTile(
-          title: Text(
-              "Tingkat Kelembapan : ${note['tingkat_kelembapan']} VWC"),
+          title: Text("Tingkat Kelembapan : ${note['tingkat_kelembapan']} VWC"),
           subtitle: Text("Waktu Identifikasi : ${note['waktu']} WIB "),
           onTap: () {
-                    _showDialog(
-                      note['tingkat_kelembapan'] ?? 'Data tidak tersedia',
-                      note['waktu'] ?? 'Data tidak tersedia',
-                    );
-                  },
+            _showDialog(
+              note['tingkat_kelembapan'] ?? 'Data tidak tersedia',
+              note['waktu'] ?? 'Data tidak tersedia',
+            );
+          },
         );
       },
     );
