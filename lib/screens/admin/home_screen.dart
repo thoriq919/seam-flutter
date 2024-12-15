@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:seam_flutter/page/catat.dart';
 import 'package:seam_flutter/screens/admin/dashboard.dart';
 import 'package:seam_flutter/screens/admin/pegawai/pegawai_screen.dart';
+import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
 import 'package:seam_flutter/screens/admin/settings/setting_screen.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const DashboardPage(),
     const PegawaiScreen(),
     const Catat(),
+    IndexScreen(),
     const SettingsPage(),
   ];
 
