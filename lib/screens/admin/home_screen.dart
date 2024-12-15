@@ -17,21 +17,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  bool _canTriggerEvent = true;   final FirebaseInAppMessaging _inAppMessaging =
+  bool _canTriggerEvent = true;
+  final FirebaseInAppMessaging _inAppMessaging =
       FirebaseInAppMessaging.instance;
 
-    Timer? _triggerResetTimer;
+  Timer? _triggerResetTimer;
   @override
   void initState() {
     super.initState();
-        _handleTriggerEvent();
+    _handleTriggerEvent();
   }
 
   void _handleTriggerEvent() {
     if (_canTriggerEvent) {
       _inAppMessaging.triggerEvent("login_success");
-      _canTriggerEvent = false; 
-            _triggerResetTimer?.cancel();
+      _canTriggerEvent = false;
+      _triggerResetTimer?.cancel();
       _triggerResetTimer = Timer(const Duration(seconds: 5), () {
         if (mounted) {
           setState(() {
@@ -102,6 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.note_add),
                     label: 'Catat',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.payment),
+                    label: 'Penjualan',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.settings),
