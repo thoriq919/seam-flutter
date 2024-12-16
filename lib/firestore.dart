@@ -20,16 +20,11 @@ class Firestore extends StatelessWidget {
     CollectionReference pertumbuhan =
         FirebaseFirestore.instance.collection('log_pertumbuhan');
 
-    return pertumbuhan
-        .doc(id)
-        .update({
-          'tanggal': Timestamp.fromDate(newtanggal),
-          'tinggi': newtinggi,
-          'diameter': newdiameter,
-        })
-        .then((value) => print("Data Tanaman berhasil ditambahkan"))
-        .catchError(
-            (error) => print("Data Tumbuhan gagal ditambahkan: $error"));
+    return pertumbuhan.doc(id).update({
+      'tanggal': Timestamp.fromDate(newtanggal),
+      'tinggi': newtinggi,
+      'diameter': newdiameter,
+    });
   }
 
   Future<void> hapusData(String id) {

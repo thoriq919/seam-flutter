@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:icon_decoration/icon_decoration.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
+import 'package:seam_flutter/blocs/auth/auth_state.dart';
+import 'package:seam_flutter/screens/admin/components/custom_drawer.dart';
+import 'package:seam_flutter/screens/auth/login_screen.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const DashboardHomePage();
-  }
-}
-
 class DashboardHomePage extends StatefulWidget {
-  const DashboardHomePage({super.key});
+  final String currentUser;
+  const DashboardHomePage({super.key, required this.currentUser});
 
   @override
   State<DashboardHomePage> createState() => _DashboardHomePageState();
@@ -26,13 +25,18 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
   String currentTime = '';
   List<Map<String, String>> humidityHistory = [];
   Map<String, IconData> arrowDirections = {};
-  Map<String, Color> arrowColors = {}; // Store arrow colors for each entry
+  Map<String, Color> arrowColors = {};
   double averageHumidity = 0;
+  String currentDate = DateFormat('MMMM d, yyyy').format(DateTime.now());
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+  }
+
+  void _openDrawer(BuildContext context) {
+    Scaffold.of(context).openDrawer();
   }
 
   void _fetchData() {
@@ -41,46 +45,37 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
       final historyList = <Map<String, String>>[];
       double totalHumidity = 0;
 
-      final oneWeekAgo =
-          DateTime.now().subtract(const Duration(days: 7)); // 7 hari lalu
-
       if (dataSnapshot.exists) {
-        dataSnapshot.children.forEach((childSnapshot) {
+        for (var childSnapshot in dataSnapshot.children) {
           final lembap =
               (childSnapshot.child('tingkat_kelembapan').value ?? 0).toString();
           final waktu = childSnapshot.child('waktu').value as int?;
           final id = childSnapshot.key;
 
           if (waktu != null && id != null) {
-            final entryDate = DateTime.fromMillisecondsSinceEpoch(waktu);
+            final entryDate =
+                DateTime.fromMillisecondsSinceEpoch(waktu * 1000, isUtc: true);
+            final formattedTime = DateFormat('HH:mm').format(entryDate);
+            final formattedDate = DateFormat('yyyy-MM-dd').format(entryDate);
 
-            // Filter hanya data dalam rentang satu minggu terakhir
-            if (entryDate.isAfter(oneWeekAgo)) {
-              final formattedTime = DateFormat('HH:mm').format(entryDate);
-              final formattedDate = DateFormat('yyyy-MM-dd').format(entryDate);
-
-              historyList.add({
-                'id': id,
-                'tingkat_kelembapan': lembap,
-                'waktu': formattedTime,
-                'tanggal': formattedDate,
-                'epoch': waktu.toString(),
-              });
-              totalHumidity += double.parse(lembap);
-            }
+            historyList.add({
+              'id': id,
+              'tingkat_kelembapan': lembap,
+              'waktu': formattedTime,
+              'tanggal': formattedDate,
+              'epoch': waktu.toString(),
+            });
+            totalHumidity += double.parse(lembap);
           }
-        });
+        }
 
-        // Sort by epoch time in descending order
         historyList.sort(
             (a, b) => int.parse(b['epoch']!).compareTo(int.parse(a['epoch']!)));
 
-        // Calculate average humidity
         if (historyList.isNotEmpty) {
           averageHumidity = totalHumidity / historyList.length;
         }
 
-        // Calculate arrow directions and colors by comparing adjacent entries
         final newArrowDirections = <String, IconData>{};
         final newArrowColors = <String, Color>{};
 
@@ -93,13 +88,13 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
           final id = historyList[i]['id']!;
           if (currentValue > previousValue) {
             newArrowDirections[id] = Icons.arrow_upward;
-            newArrowColors[id] = Colors.green;
+            newArrowColors[id] = ColorTheme.green;
           } else if (currentValue < previousValue) {
             newArrowDirections[id] = Icons.arrow_downward;
-            newArrowColors[id] = Colors.red;
+            newArrowColors[id] = ColorTheme.danger;
           } else {
             newArrowDirections[id] = Icons.remove;
-            newArrowColors[id] = Colors.grey; // Neutral color for no change
+            newArrowColors[id] = ColorTheme.grey;
           }
         }
 
@@ -118,227 +113,154 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
     });
   }
 
+  String extractFirstTwoWords(String fullName) {
+    List<String> words = fullName.split(' ');
+    if (words.length < 2) {
+      return fullName;
+    }
+    return '${words[0]} ${words[1]}';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Unauthenticated) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: ColorTheme.white,
+          elevation: 0,
+          leading: Builder(
+            builder: (context) => IconButton(
+              onPressed: () => _openDrawer(context),
+              icon: Icon(Icons.menu_rounded, color: ColorTheme.blackFont),
+            ),
+          ),
+        ),
+        drawer: CustomDrawer(
+          currentUsername: extractFirstTwoWords(widget.currentUser),
+        ),
+        backgroundColor: ColorTheme.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
+                        padding: const EdgeInsets.only(
+                            bottom: 20, left: 20, right: 20),
                         child: Column(
                           children: [
-                            const Text(
-                              'Kelembapan',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              height: 200,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 200,
-                                    width: 200,
-                                    child: CircularProgressIndicator(
-                                      value:
-                                          double.parse(currentHumidity) / 100,
-                                      strokeWidth: 15,
-                                      color: ColorTheme.primary,
-                                      backgroundColor:
-                                          Colors.grey.withOpacity(0.2),
-                                    ),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: ColorTheme.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(0, 25),
+                                    blurRadius: 15,
+                                    spreadRadius: -25,
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '$currentHumidity%',
-                                        style: TextStyle(
-                                          fontSize: 48,
-                                          fontWeight: FontWeight.bold,
-                                          color: ColorTheme.primary,
-                                        ),
-                                      ),
-                                      Text(
-                                        currentTime,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.bar_chart_rounded,
+                                    color: ColorTheme.blackFont,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Statistics',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorTheme.blackFont),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Average Humidity Indicator
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(0, 3),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const SizedBox(),
+                                Text(
+                                  currentDate,
+                                  style: TextStyle(
+                                    color: ColorTheme.blackFont,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Rata-rata Kelembapan',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                DecoratedIcon(
+                                  icon: Icon(
+                                    Icons.water_drop_rounded,
+                                    color: ColorTheme.secondary,
+                                    size: 20,
+                                  ),
+                                  decoration: const IconDecoration(
+                                    border: IconBorder(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Ave ${averageHumidity.toStringAsFixed(2)} %',
+                                  style: TextStyle(color: ColorTheme.blackFont),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20),
-                            Text(
-                              '${averageHumidity.toStringAsFixed(2)}%',
-                              style: TextStyle(
-                                fontSize: 48,
-                                fontWeight: FontWeight.bold,
-                                color: ColorTheme.primary,
-                              ),
+                            SizedBox(
+                              height: 250,
+                              child: CircularPercentIndicator(
+                                  radius: 120,
+                                  center: Text(
+                                    '$currentHumidity%',
+                                    style: TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorTheme.blackFont,
+                                    ),
+                                  ),
+                                  restartAnimation: true,
+                                  backgroundWidth: 40,
+                                  animation: true,
+                                  lineWidth: 50,
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  progressColor: ColorTheme.primary,
+                                  percent: double.parse(currentHumidity) / 100,
+                                  backgroundColor: ColorTheme.secondary),
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                'Log Kelembapan',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: humidityHistory.length,
-                              itemBuilder: (context, index) {
-                                final humidity = humidityHistory[index];
-
-                                return ListTile(
-                                  leading: Icon(
-                                    Icons.water_drop,
-                                    color: ColorTheme.primary,
-                                  ),
-                                  title: Text(
-                                    '${humidity['tingkat_kelembapan']} VWC',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '${humidity['waktu']} WIB',
-                                  ),
-                                  trailing: Icon(
-                                    arrowDirections[humidity['id']] ??
-                                        Icons.remove,
-                                    color: arrowColors[humidity['id']] ??
-                                        Colors.grey,
-                                  ),
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('Detail Catatan'),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                  'Tingkat Kelembapan: ${humidity['tingkat_kelembapan']} VWC'),
-                                              Text(
-                                                  'Waktu: ${humidity['waktu']} WIB'),
-                                            ],
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('Tutup'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: ColorTheme.primary,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(25),
-                ),
-              ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -5,7 +5,7 @@ import 'package:seam_flutter/screens/auth/register_screen.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class PegawaiScreen extends StatelessWidget {
-  const PegawaiScreen({Key? key}) : super(key: key);
+  const PegawaiScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -181,9 +181,9 @@ class PegawaiScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        if (user.email != null) _buildInfoRow(Icons.email, user.email!),
-        if (user.telp != null) _buildInfoRow(Icons.phone, user.telp!),
-        if (user.alamat != null) _buildInfoRow(Icons.location_on, user.alamat!),
+        _buildInfoRow(Icons.email, user.email),
+        _buildInfoRow(Icons.phone, user.telp),
+        _buildInfoRow(Icons.location_on, user.alamat),
       ],
     );
   }
@@ -253,9 +253,8 @@ class PegawaiScreen extends StatelessWidget {
           .collection('users')
           .doc(user.uid)
           .delete();
-      print('User deleted successfully');
     } catch (e) {
-      print('Error deleting user: $e');
+      SnackBar(content: Text("User dengan id ${user.uid} tidak ditemukan"));
     }
   }
 }

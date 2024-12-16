@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  String currentUserName = '';
 
   InputDecoration _buildInputDecoration(String label, IconData icon) {
     return InputDecoration(
@@ -53,7 +54,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
-          Navigator.of(context).pushReplacementNamed('/home');
+          currentUserName = state.user.nama;
+          Navigator.of(context)
+              .pushReplacementNamed('/home', arguments: currentUserName);
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -68,118 +71,114 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: ColorTheme.primary.withAlpha(150),
         body: SafeArea(
           child: Center(
-            child: Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            Center(
-                              child: Image.asset('assets/images/logo.png',
-                                  height: 100, fit: BoxFit.contain),
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            TextFormField(
-                              controller: _emailController,
-                              decoration: _buildInputDecoration(
-                                'Email',
-                                Icons.email_outlined,
-                              ),
-                              validator: (value) {
-                                if (value?.isEmpty ?? true) {
-                                  return 'Please enter your email';
-                                }
-                                if (!EmailValidator.validate(value!)) {
-                                  return 'Please enter a valid email';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              controller: _passwordController,
-                              obscureText: !_isPasswordVisible,
-                              decoration: _buildInputDecoration(
-                                'Password',
-                                Icons.lock_outlined,
-                              ).copyWith(
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _isPasswordVisible
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color: ColorTheme.primary,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _isPasswordVisible = !_isPasswordVisible;
-                                    });
-                                  },
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value?.isEmpty ?? true) {
-                                  return 'Please enter a password';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 24),
-                            BlocBuilder<AuthBloc, AuthState>(
-                              builder: (context, state) {
-                                return state is AuthLoading
-                                    ? const CircularProgressIndicator()
-                                    : ElevatedButton(
-                                        onPressed: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            context.read<AuthBloc>().add(
-                                                  SignInRequested(
-                                                    _emailController.text
-                                                        .trim(),
-                                                    _passwordController.text,
-                                                  ),
-                                                );
-                                          }
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: ColorTheme.primary,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 16,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Login',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      );
-                              },
-                            ),
-                          ],
-                        ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ],
-                  ),
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Image.asset('assets/images/logo.png',
+                                height: 100, fit: BoxFit.contain),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          TextFormField(
+                            controller: _emailController,
+                            decoration: _buildInputDecoration(
+                              'Email',
+                              Icons.email_outlined,
+                            ),
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Please enter your email';
+                              }
+                              if (!EmailValidator.validate(value!)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: !_isPasswordVisible,
+                            decoration: _buildInputDecoration(
+                              'Password',
+                              Icons.lock_outlined,
+                            ).copyWith(
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: ColorTheme.primary,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value?.isEmpty ?? true) {
+                                return 'Please enter a password';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 24),
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              return state is AuthLoading
+                                  ? const CircularProgressIndicator()
+                                  : ElevatedButton(
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          context.read<AuthBloc>().add(
+                                                SignInRequested(
+                                                  _emailController.text.trim(),
+                                                  _passwordController.text,
+                                                ),
+                                              );
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: ColorTheme.primary,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

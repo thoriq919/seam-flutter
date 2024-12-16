@@ -48,11 +48,21 @@ class MyApp extends StatelessWidget {
         initialRoute: '/login',
         routes: {
           '/login': (context) => const LoginScreen(),
-          '/home': (context) => const HomeScreen(),
           '/register': (context) => const RegisterScreen(),
           '/catat': (context) => const Catat(),
           '/monitoring': (context) => const Realtime(),
           '/penjualan': (context) => IndexScreen()
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/home') {
+            final args = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => HomeScreen(
+                currentUser: args,
+              ),
+            );
+          }
+          return null;
         },
       ),
     );

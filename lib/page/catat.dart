@@ -18,7 +18,7 @@ class _CatatState extends State<Catat> {
   final TextEditingController _diameterController = TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
 
-  final Firestore firestore = Firestore();
+  final Firestore firestore = const Firestore();
 
   List<DocumentSnapshot> _listCatat = [];
 
@@ -51,8 +51,6 @@ class _CatatState extends State<Catat> {
         _tinggiController.text,
         _diameterController.text,
       );
-    } else {
-      print('Tanggal belum dipilih');
     }
     readCatat();
   }
@@ -77,7 +75,6 @@ class _CatatState extends State<Catat> {
     pertumbuhan.get().then((QuerySnapshot snapshot) {
       setState(() {
         _listCatat = snapshot.docs;
-        print('Data yang diambil: ${snapshot.docs}');
       });
     });
   }
@@ -90,13 +87,12 @@ class _CatatState extends State<Catat> {
     _diameterController.clear();
   }
 
-
   // ... [Previous methods remain the same] ...
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -298,10 +294,11 @@ class _CatatState extends State<Catat> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                _buildInfoRow(Icons.height, 'Tinggi', '${catatan['tinggi']} cm'),
-                const SizedBox(height: 4),
                 _buildInfoRow(
-                    Icons.circle_outlined, 'Diameter', '${catatan['diameter']} cm'),
+                    Icons.height, 'Tinggi', '${catatan['tinggi']} cm'),
+                const SizedBox(height: 4),
+                _buildInfoRow(Icons.circle_outlined, 'Diameter',
+                    '${catatan['diameter']} cm'),
               ],
             ),
             onTap: () {
