@@ -10,17 +10,9 @@ import 'package:seam_flutter/screens/utils/color_theme.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const DashboardHomePage();
-  }
-}
-
 class DashboardHomePage extends StatefulWidget {
-  const DashboardHomePage({super.key});
+  final String currentUser;
+  const DashboardHomePage({super.key, required this.currentUser});
 
   @override
   State<DashboardHomePage> createState() => _DashboardHomePageState();
@@ -121,6 +113,14 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
     });
   }
 
+  String extractFirstTwoWords(String fullName) {
+    List<String> words = fullName.split(' ');
+    if (words.length < 2) {
+      return fullName;
+    }
+    return '${words[0]} ${words[1]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
@@ -143,122 +143,119 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
             ),
           ),
         ),
-        drawer: const CustomDrawer(),
+        drawer: CustomDrawer(
+          currentUsername: extractFirstTwoWords(widget.currentUser),
+        ),
         backgroundColor: ColorTheme.white,
         body: SafeArea(
           child: Column(
             children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.only(
-                              bottom: 20, left: 20, right: 20),
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: ColorTheme.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.3),
-                                      offset: const Offset(0, 25),
-                                      blurRadius: 15,
-                                      spreadRadius: -25,
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.bar_chart_rounded,
-                                      color: ColorTheme.blackFont,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      'Statistics',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: ColorTheme.blackFont),
-                                    ),
-                                  ],
-                                ),
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(
+                            bottom: 20, left: 20, right: 20),
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: ColorTheme.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(0, 25),
+                                    blurRadius: 15,
+                                    spreadRadius: -25,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const SizedBox(),
+                                  Icon(
+                                    Icons.bar_chart_rounded,
+                                    color: ColorTheme.blackFont,
+                                  ),
+                                  const SizedBox(width: 10),
                                   Text(
-                                    currentDate,
+                                    'Statistics',
                                     style: TextStyle(
-                                      color: ColorTheme.blackFont,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  DecoratedIcon(
-                                    icon: Icon(
-                                      Icons.water_drop_rounded,
-                                      color: ColorTheme.secondary,
-                                      size: 20,
-                                    ),
-                                    decoration: const IconDecoration(
-                                      border: IconBorder(),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    'Ave ${averageHumidity.toStringAsFixed(2)} %',
-                                    style:
-                                        TextStyle(color: ColorTheme.blackFont),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                height: 250,
-                                child: CircularPercentIndicator(
-                                    radius: 120,
-                                    center: Text(
-                                      '$currentHumidity%',
-                                      style: TextStyle(
-                                        fontSize: 36,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: ColorTheme.blackFont,
-                                      ),
-                                    ),
-                                    restartAnimation: true,
-                                    backgroundWidth: 40,
-                                    animation: true,
-                                    lineWidth: 50,
-                                    circularStrokeCap: CircularStrokeCap.round,
-                                    progressColor: ColorTheme.primary,
-                                    percent:
-                                        double.parse(currentHumidity) / 100,
-                                    backgroundColor: ColorTheme.secondary),
+                                        color: ColorTheme.blackFont),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const SizedBox(),
+                                Text(
+                                  currentDate,
+                                  style: TextStyle(
+                                    color: ColorTheme.blackFont,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                DecoratedIcon(
+                                  icon: Icon(
+                                    Icons.water_drop_rounded,
+                                    color: ColorTheme.secondary,
+                                    size: 20,
+                                  ),
+                                  decoration: const IconDecoration(
+                                    border: IconBorder(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Ave ${averageHumidity.toStringAsFixed(2)} %',
+                                  style: TextStyle(color: ColorTheme.blackFont),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 250,
+                              child: CircularPercentIndicator(
+                                  radius: 120,
+                                  center: Text(
+                                    '$currentHumidity%',
+                                    style: TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorTheme.blackFont,
+                                    ),
+                                  ),
+                                  restartAnimation: true,
+                                  backgroundWidth: 40,
+                                  animation: true,
+                                  lineWidth: 50,
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  progressColor: ColorTheme.primary,
+                                  percent: double.parse(currentHumidity) / 100,
+                                  backgroundColor: ColorTheme.secondary),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
               ),

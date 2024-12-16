@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_event.dart';
+import 'package:seam_flutter/screens/admin/chat/chat.dart';
 import 'package:seam_flutter/screens/admin/kelembapan/kelembapan_screen.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  final String currentUsername;
+  const CustomDrawer({super.key, required this.currentUsername});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +80,7 @@ class CustomDrawer extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Admin',
+                            currentUsername,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -134,7 +136,12 @@ class CustomDrawer extends StatelessWidget {
                             style: TextStyle(color: ColorTheme.blackFont),
                           ),
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Chat(senderName: currentUsername)),
+                            );
                           },
                         ),
                       ],

@@ -2,14 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:seam_flutter/page/catat.dart';
 import 'package:seam_flutter/screens/admin/dashboard.dart';
-import 'package:seam_flutter/screens/admin/pegawai/pegawai_screen.dart';
-import 'package:seam_flutter/screens/admin/settings/setting_screen.dart';
-import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String currentUser;
+  const HomeScreen({super.key, this.currentUser = 'User'});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,6 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const DashboardHomePage();
+    final userToDisplay =
+        widget.currentUser.isNotEmpty ? widget.currentUser : 'User';
+    return DashboardHomePage(currentUser: userToDisplay);
   }
 }
