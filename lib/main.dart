@@ -5,6 +5,8 @@ import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/firebase_options.dart';
 import 'package:seam_flutter/page/realtime.dart';
 import 'package:seam_flutter/screens/admin/home_screen.dart';
+import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
+import 'package:seam_flutter/screens/admin/penjualan/penjualan_screen.dart';
 import 'package:seam_flutter/screens/auth/login_screen.dart';
 import 'package:seam_flutter/screens/auth/register_screen.dart';
 import 'package:seam_flutter/page/catat.dart';
@@ -49,6 +51,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/catat': (context) => const Catat(),
           '/monitoring': (context) => const Realtime(),
+          '/penjualan': (context) => IndexScreen()
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/home') {
