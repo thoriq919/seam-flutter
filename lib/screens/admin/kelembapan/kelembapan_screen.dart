@@ -93,11 +93,15 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
       backgroundColor: ColorTheme.white,
       appBar: AppBar(
         backgroundColor: ColorTheme.white,
+        automaticallyImplyLeading: false,
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Log Kelembapan',
-          style: TextStyle(color: ColorTheme.blackFont),
+          'Soil Moisture History',
+          style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: ColorTheme.blackFont),
         ),
       ),
       body: Stack(
@@ -113,7 +117,16 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
                       itemCount: humidityHistory.length,
                       itemBuilder: (context, index) {
                         final humidity = humidityHistory[index];
-
+                        final humidityValue =
+                            double.parse(humidity['tingkat_kelembapan'] ?? '0');
+                        Color textColor;
+                        if (humidityValue > 80) {
+                          textColor = ColorTheme.green;
+                        } else if (humidityValue >= 50) {
+                          textColor = ColorTheme.warning;
+                        } else {
+                          textColor = ColorTheme.danger;
+                        }
                         return ListTile(
                           leading: Icon(
                             Icons.water_drop,
@@ -121,8 +134,9 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
                           ),
                           title: Text(
                             '${humidity['tingkat_kelembapan']} VWC',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
+                              color: textColor,
                             ),
                           ),
                           subtitle: Text(

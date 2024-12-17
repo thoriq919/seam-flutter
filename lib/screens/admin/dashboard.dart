@@ -255,6 +255,43 @@ class _DashboardHomePageState extends State<DashboardHomePage> {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: humidityHistory.take(4).map((humidity) {
+                          return Card(
+                            color: ColorTheme.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${humidity['tingkat_kelembapan']}%',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorTheme.blackFont,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    '${humidity['waktu']}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: ColorTheme.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ],
                   ),
                 ),

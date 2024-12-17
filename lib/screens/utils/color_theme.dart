@@ -10,6 +10,7 @@ class ColorTheme {
   static Color blackFont = const Color(0xFF575757);
   static Color white = const Color(0xFFF7FBFF);
   static Color danger = const Color(0xFFEB2020);
+  static Color warning = const Color(0xFFFFC107);
   static List<Color> background = [
     const Color(0xFFF7FBFF),
     const Color(0xFFCBDBEB),

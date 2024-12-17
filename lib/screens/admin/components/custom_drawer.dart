@@ -4,6 +4,7 @@ import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_event.dart';
 import 'package:seam_flutter/screens/admin/chat/chat.dart';
 import 'package:seam_flutter/screens/admin/kelembapan/kelembapan_screen.dart';
+import 'package:seam_flutter/screens/admin/maps/map_screen.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -142,6 +143,23 @@ class CustomDrawer extends StatelessWidget {
                                   builder: (context) =>
                                       Chat(senderName: currentUsername)),
                             );
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(
+                            Icons.map_rounded,
+                            color: ColorTheme.blackFont,
+                          ),
+                          title: Text(
+                            'Maps',
+                            style: TextStyle(color: ColorTheme.blackFont),
+                          ),
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return TrackingMapScreen();
+                              },
+                            ));
                           },
                         ),
                       ],
