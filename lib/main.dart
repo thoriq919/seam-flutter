@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/firebase_options.dart';
-import 'package:seam_flutter/page/realtime.dart';
-import 'package:seam_flutter/screens/admin/home_screen.dart';
+import 'package:seam_flutter/screens/admin/admin_layout.dart';
 import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
-import 'package:seam_flutter/screens/admin/penjualan/penjualan_screen.dart';
 import 'package:seam_flutter/screens/auth/login_screen.dart';
 import 'package:seam_flutter/screens/auth/register_screen.dart';
-import 'package:seam_flutter/page/catat.dart';
+import 'package:seam_flutter/screens/pegawai/pegawai_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,8 +47,6 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => const LoginScreen(),
           '/register': (context) => const RegisterScreen(),
-          '/catat': (context) => const Catat(),
-          '/monitoring': (context) => const Realtime(),
           '/penjualan': (context) => IndexScreen()
         },
         onGenerateRoute: (settings) {
@@ -58,6 +54,13 @@ class MyApp extends StatelessWidget {
             final args = settings.arguments as String;
             return MaterialPageRoute(
               builder: (context) => HomeScreen(
+                currentUser: args,
+              ),
+            );
+          } else if (settings.name == '/user_dashboard') {
+            final args = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) => PegawaiLayout(
                 currentUser: args,
               ),
             );

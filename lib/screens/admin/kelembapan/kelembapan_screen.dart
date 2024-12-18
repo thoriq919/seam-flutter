@@ -180,7 +180,6 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
               ),
             ),
           ),
-          // Floating back button at the bottom center
           Positioned(
             bottom: 20,
             left: 0,

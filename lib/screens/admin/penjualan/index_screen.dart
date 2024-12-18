@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:seam_flutter/screens/admin/penjualan/penjualan_screen.dart';
-import 'pdf_export.dart'; // Import the PDF export functionality
+import 'pdf_export.dart';
 
 class IndexScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class IndexScreen extends StatefulWidget {
 
 class _IndexScreenState extends State<IndexScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  String _sortOrder = 'Newest'; // Default sort order
+  String _sortOrder = 'Newest';
 
   void _showBottomSheet(BuildContext context, DocumentSnapshot record) {
     final TextEditingController nameController =
