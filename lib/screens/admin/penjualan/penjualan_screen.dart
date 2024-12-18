@@ -229,14 +229,19 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  onPressed: startPayment,
-                  child: Text('Pay Now'),
+                Expanded(
+                  // Wrap button to prevent unbounded constraints
+                  child: ElevatedButton(
+                    onPressed: startPayment,
+                    child: Text('Pay Now'),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: saveTransaction,
-                  child: Text('Save Transaction'),
-                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: saveTransaction,
+                    child: Text('Save Transaction'),
+                  ),
+                )
               ],
             ),
           ],
