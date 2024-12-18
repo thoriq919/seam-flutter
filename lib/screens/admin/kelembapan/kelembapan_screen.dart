@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class KelembapanScreen extends StatefulWidget {
   const KelembapanScreen({super.key});
@@ -113,6 +114,82 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
+                    flex: 1,
+                    child: humidityHistory.isNotEmpty
+                        ? LineChart(
+                            LineChartData(
+                              gridData: FlGridData(show: true),
+                              titlesData: FlTitlesData(
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    reservedSize: 40,
+                                    getTitlesWidget: (value, meta) {
+                                      return Text(value.toInt().toString());
+                                    },
+                                  ),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    interval: 1,
+                                    getTitlesWidget: (value, meta) {
+                                      int index = value.toInt();
+                                      if (index >= 0 &&
+                                          index < humidityHistory.length) {
+                                        return Text(
+                                          humidityHistory[index]['waktu'] ?? '',
+                                          style: const TextStyle(fontSize: 10),
+                                        );
+                                      }
+                                      return const Text('');
+                                    },
+                                  ),
+                                ),
+                              ),
+                              borderData: FlBorderData(
+                                show: true,
+                                border: const Border.symmetric(
+                                  horizontal: BorderSide(color: Colors.black26),
+                                ),
+                              ),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: List.generate(
+                                    humidityHistory.length > 10
+                                        ? 10
+                                        : humidityHistory.length,
+                                    (index) {
+                                      // Ambil 20 data terakhir
+                                      final last20Data =
+                                          humidityHistory.length > 10
+                                              ? humidityHistory
+                                                  .sublist(0, 10)
+                                                  .reversed
+                                                  .toList()
+                                              : humidityHistory.reversed
+                                                  .toList();
+
+                                      return FlSpot(
+                                        index.toDouble(),
+                                        double.parse(last20Data[index]
+                                                ['tingkat_kelembapan'] ??
+                                            '0'),
+                                      );
+                                    },
+                                  ),
+                                  isCurved: true,
+                                  color: ColorTheme.primary,
+                                  barWidth: 3,
+                                  belowBarData: BarAreaData(show: false),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Center(child: Text('No data available')),
+                  ),
+                  Expanded(
+                    flex: 2,
                     child: ListView.builder(
                       itemCount: humidityHistory.length,
                       itemBuilder: (context, index) {
@@ -180,7 +257,6 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
               ),
             ),
           ),
-          // Floating back button at the bottom center
           Positioned(
             bottom: 20,
             left: 0,
@@ -216,7 +292,7 @@ class _KelembapanScreenState extends State<KelembapanScreen> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

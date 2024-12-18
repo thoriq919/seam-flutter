@@ -6,6 +6,7 @@ import 'package:seam_flutter/screens/admin/chat/chat.dart';
 import 'package:seam_flutter/screens/admin/kelembapan/kelembapan_screen.dart';
 import 'package:seam_flutter/screens/admin/maps/map_screen.dart';
 import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
+import 'package:seam_flutter/screens/admin/webview/soil_sensor.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -163,6 +164,23 @@ class CustomDrawer extends StatelessWidget {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return TrackingMapScreen();
+                              },
+                            ));
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(
+                            Icons.grass,
+                            color: ColorTheme.blackFont,
+                          ),
+                          title: Text(
+                            'Soil Sensor',
+                            style: TextStyle(color: ColorTheme.blackFont),
+                          ),
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return SoilSensor();
                               },
                             ));
                           },
