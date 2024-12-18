@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
+import 'package:seam_flutter/screens/remote_config/config.dart';
+import 'dart:async';
 
 class CreateSpendPage extends StatefulWidget {
   const CreateSpendPage({super.key});
@@ -15,6 +17,30 @@ class _CreateSpendPageState extends State<CreateSpendPage> {
   final TextEditingController _costController = TextEditingController();
   DateTime? _selectedDate;
   final String currentDate = DateFormat('MMMM d, yyyy').format(DateTime.now());
+  late FirebaseRemoteConfigService _remoteConfigService;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _remoteConfigService = FirebaseRemoteConfigService();
+    _initializeRemoteConfig();
+
+    // Set interval refresh (contoh: setiap 30 detik)
+    _timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
+      await _fetchRemoteConfig();
+    });
+  }
+
+  Future<void> _initializeRemoteConfig() async {
+    await _remoteConfigService.initialize();
+    setState(() {}); // Refresh UI setelah inisialisasi
+  }
+
+  Future<void> _fetchRemoteConfig() async {
+    await _remoteConfigService.fetchAndActivate();
+    setState(() {}); // Refresh UI setelah pembaruan konfigurasi
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -42,6 +68,12 @@ class _CreateSpendPageState extends State<CreateSpendPage> {
   }
 
   void _addSpend() {
+    // Parsing warna dari Remote Config
+    final String? snackbarColorHex = _remoteConfigService.fontColor;
+    final Color snackbarColor = snackbarColorHex != null
+        ? _hexToColor(snackbarColorHex)
+        : Colors.green; // Warna default jika Remote Config gagal
+
     if (_nameController.text.isNotEmpty &&
         _costController.text.isNotEmpty &&
         _selectedDate != null) {
@@ -50,9 +82,29 @@ class _CreateSpendPageState extends State<CreateSpendPage> {
         'cost': double.parse(_costController.text),
         'date': Timestamp.fromDate(_selectedDate!),
       }).then((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Spend data has been added'),
+            backgroundColor: snackbarColor, // Warna dari Remote Config
+          ),
+        );
         Navigator.pop(context);
       });
     }
+  }
+
+  /// Fungsi untuk mengonversi hex color ke Color
+  Color _hexToColor(String hex) {
+    final buffer = StringBuffer();
+    if (hex.length == 6 || hex.length == 7) buffer.write('ff');
+    buffer.write(hex.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Hentikan timer saat widget dihancurkan
+    super.dispose();
   }
 
   @override

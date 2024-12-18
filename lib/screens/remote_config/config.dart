@@ -16,8 +16,6 @@ class FirebaseRemoteConfigService {
 
   String get fontColor =>
       _remoteConfig.getString(FirebaseRemoteConfigKeys.fontColor);
-  String get fontSize =>
-      _remoteConfig.getString(FirebaseRemoteConfigKeys.fontSize);
 
   Future<void> _setConfigSetting() async => _remoteConfig.setConfigSettings(
         RemoteConfigSettings(
@@ -28,7 +26,6 @@ class FirebaseRemoteConfigService {
   Future<void> _setDefaults() async => _remoteConfig.setDefaults(
         const {
           FirebaseRemoteConfigKeys.fontColor: '#ff0000',
-          FirebaseRemoteConfigKeys.fontSize: 18,
         },
       );
   Future<void> fetchAndActivate() async {
@@ -49,9 +46,7 @@ class FirebaseRemoteConfigService {
 }
 
 final message = FirebaseRemoteConfigService().fontColor;
-final size = FirebaseRemoteConfigService().fontSize;
 
 class FirebaseRemoteConfigKeys {
   static const String fontColor = 'font_color';
-  static const String fontSize = 'font_size';
 }
