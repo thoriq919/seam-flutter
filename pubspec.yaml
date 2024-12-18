@@ -48,7 +48,6 @@ dependencies:
   google_maps_flutter: ^2.10.0
   google_maps_flutter_android: ^2.14.11
   http: ^1.2.2
-  http: ^1.2.2
   path_provider: ^2.1.5
   pdf: ^3.11.1
   icon_decoration: ^2.1.0
