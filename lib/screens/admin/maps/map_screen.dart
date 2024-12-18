@@ -61,7 +61,7 @@ class _TrackingMapScreenState extends State<TrackingMapScreen> {
             position: _destination,
             icon:
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-            infoWindow: InfoWindow(title: 'Destination'),
+            infoWindow: InfoWindow(title: 'Kebun Ayahnya Viga'),
           ),
         ]);
 

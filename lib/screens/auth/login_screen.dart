@@ -55,8 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
       listener: (context, state) {
         if (state is Authenticated) {
           currentUserName = state.user.nama;
-          Navigator.of(context)
-              .pushReplacementNamed('/home', arguments: currentUserName);
+          if (state.user.role == 'admin') {
+            Navigator.of(context)
+                .pushReplacementNamed('/home', arguments: currentUserName);
+          } else {
+            Navigator.of(context).pushReplacementNamed('/user_dashboard',
+                arguments: currentUserName);
+          }
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
