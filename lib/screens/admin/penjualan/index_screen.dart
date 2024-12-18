@@ -34,11 +34,13 @@ class _IndexScreenState extends State<IndexScreen> {
                 controller: nameController,
                 decoration: InputDecoration(labelText: 'Nama'),
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: priceController,
                 decoration: InputDecoration(labelText: 'Total Bayar'),
                 keyboardType: TextInputType.number,
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: quantityController,
                 decoration: InputDecoration(labelText: 'Jumlah (KG)'),
@@ -48,37 +50,51 @@ class _IndexScreenState extends State<IndexScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      // Update the record in Firestore
-                      await _firestore
-                          .collection('pembayaran')
-                          .doc(record.id)
-                          .update({
-                        'nama': nameController.text,
-                        'total_bayar': int.tryParse(priceController.text) ?? 0,
-                        'total_alpukat':
-                            int.tryParse(quantityController.text) ?? 0,
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text('Save Changes'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      // Delete the record from Firestore
-                      await _firestore
-                          .collection('pembayaran')
-                          .doc(record.id)
-                          .delete();
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.white),
+                  Expanded(
+                    // Wrap the button in an Expanded widget
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // Update the record in Firestore
+                        await _firestore
+                            .collection('pembayaran')
+                            .doc(record.id)
+                            .update({
+                          'nama': nameController.text,
+                          'total_bayar':
+                              int.tryParse(priceController.text) ?? 0,
+                          'total_alpukat':
+                              int.tryParse(quantityController.text) ?? 0,
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Transaksi Berhasil di Edit')),
+                        );
+                        Navigator.pop(context);
+                      },
+                      child: Text('Save Changes'),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                  ),
+                  SizedBox(width: 8), // Add some spacing between the buttons
+                  Expanded(
+                    // Wrap the button in an Expanded widget
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // Delete the record from Firestore
+                        await _firestore
+                            .collection('pembayaran')
+                            .doc(record.id)
+                            .delete();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Transaksi berhasil dihapus')),
+                        );
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
                     ),
                   ),
                 ],
@@ -100,7 +116,7 @@ class _IndexScreenState extends State<IndexScreen> {
             icon: Icon(Icons.picture_as_pdf),
             onPressed: () {
               // Call the PDF export function
-              exportToPDF();
+              exportToPDF(context);
             },
           ),
         ],
@@ -148,7 +164,7 @@ class _IndexScreenState extends State<IndexScreen> {
                     return ListTile(
                       title: Text(record['nama']),
                       subtitle: Text(
-                          'Order ID: ${record['orderId']} - Status: ${record['status']}'),
+                          'Order ID: ${record['orderId']} - Status: ${record['status']} - Total: ${record['total_bayar']}'),
                       trailing: Text(
                           record['createdAt']?.toDate().toString() ?? 'N/A'),
                       onTap: () => _showBottomSheet(

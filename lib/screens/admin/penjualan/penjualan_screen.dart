@@ -15,7 +15,7 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final String midtransClientKey = 'SB-Mid-client-u2hWFx0vEzoGFzqS';
+  final String midtransClientKey = 'SB-Mid-server-RyxvpqiZ4B58BNp8anchaTFr';
   final String midtransBaseUrl =
       'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
@@ -95,6 +95,13 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
     final snapUrl = await createTransaction(orderId: orderId, amount: amount);
 
     if (snapUrl != null) {
+      saveTransactionToFirestore(
+        name: name,
+        orderId: orderId,
+        amount: amount,
+        total: quantityKg,
+        status: 'success',
+      );
       Navigator.push(
         context,
         MaterialPageRoute(
