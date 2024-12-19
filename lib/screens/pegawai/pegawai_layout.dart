@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seam_flutter/screens/admin/dashboard.dart';
 import 'package:seam_flutter/screens/pegawai/dashboard.dart';
 import 'package:seam_flutter/screens/pegawai/grown/index.dart';
 import 'package:seam_flutter/screens/pegawai/spend/index.dart';
@@ -26,9 +27,7 @@ class _PegawaiLayoutState extends State<PegawaiLayout> {
     _screens = [
       PencatatanIndexPage(currentUser: userToDisplay),
       PegawaiDashboard(currentUser: userToDisplay),
-      SpendIndexPage(
-        currentUser: userToDisplay,
-      ),
+      SpendIndexPage(currentUser: userToDisplay),
     ];
   }
 
@@ -53,12 +52,12 @@ class _PegawaiLayoutState extends State<PegawaiLayout> {
             label: 'Note',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.widgets_rounded),
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.wallet_rounded),
-            label: 'Notifications',
+            label: 'Spend',
           ),
         ],
         currentIndex: _selectedIndex,

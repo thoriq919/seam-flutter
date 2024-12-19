@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:seam_flutter/models/user.dart';
-import 'package:seam_flutter/screens/auth/register_screen.dart';
+import 'package:seam_flutter/screens/admin/employee/edit.dart';
+import 'package:seam_flutter/screens/admin/employee/create.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class PegawaiScreen extends StatelessWidget {
@@ -9,38 +10,35 @@ class PegawaiScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
+      appBar: AppBar(
+        title: Text(
+          'Employee',
+          style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: ColorTheme.blackFont),
+        ),
+        backgroundColor: ColorTheme.white,
+        centerTitle: true,
+        elevation: 0,
+      ),
+      backgroundColor: ColorTheme.white,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(context, size),
             Expanded(child: _buildUserList(context)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, Size size) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SizedBox(
-        height: size.height * 0.1,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Pegawai',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            IconButton(
-              onPressed: () => _navigateToRegister(context),
-              icon: const Icon(Icons.add),
-            ),
+            ElevatedButton.icon(
+                onPressed: () => _navigateToRegister(context),
+                label: Text('Add New'),
+                icon: Icon(Icons.add),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorTheme.blackFont,
+                    foregroundColor: ColorTheme.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)))),
           ],
         ),
       ),
@@ -55,35 +53,26 @@ class PegawaiScreen extends StatelessWidget {
   }
 
   Widget _buildUserList(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ColorTheme.primary,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(25),
-          topRight: Radius.circular(25),
-        ),
-      ),
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .where('role', isEqualTo: 'pegawai')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return _buildErrorWidget(snapshot.error.toString());
-          }
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'pegawai')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return _buildErrorWidget(snapshot.error.toString());
+        }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildLoadingWidget();
-          }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingWidget();
+        }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return _buildEmptyWidget();
-          }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return _buildEmptyWidget();
+        }
 
-          return _buildUserListView(context, snapshot.data!.docs);
-        },
-      ),
+        return _buildUserListView(context, snapshot.data!.docs);
+      },
     );
   }
 
@@ -114,7 +103,7 @@ class PegawaiScreen extends StatelessWidget {
   Widget _buildUserListView(
       BuildContext context, List<QueryDocumentSnapshot> docs) {
     return ListView.builder(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.symmetric(vertical: 10),
       itemCount: docs.length,
       itemBuilder: (context, index) {
         final doc = docs[index];
@@ -130,11 +119,11 @@ class PegawaiScreen extends StatelessWidget {
     return InkWell(
       onLongPress: () => _showDeleteConfirmationDialog(context, user),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: EdgeInsets.symmetric(vertical: 2),
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -148,10 +137,23 @@ class PegawaiScreen extends StatelessWidget {
             _buildUserAvatar(user),
             const SizedBox(width: 12),
             Expanded(child: _buildUserDetails(user)),
+            IconButton(
+              icon: Icon(Icons.edit, color: ColorTheme.blackFont),
+              onPressed: () => _navigateToEdit(context, user),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _navigateToEdit(BuildContext context, UserModel user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditUserScreen(user: user),
+      ),
+    ).then((_) {});
   }
 
   Widget _buildUserAvatar(UserModel user) {

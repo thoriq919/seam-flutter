@@ -67,7 +67,7 @@ class _SpendIndexPageState extends State<SpendIndexPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.wallet_rounded,
+                                  Icons.wallet_outlined,
                                   color: ColorTheme.blackFont,
                                 ),
                                 const SizedBox(width: 10),

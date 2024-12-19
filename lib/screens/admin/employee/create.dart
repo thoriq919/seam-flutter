@@ -108,97 +108,94 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: ColorTheme.white,
         appBar: AppBar(
-          title: const Text(
-            'Register Pegawai',
+          title: Text(
+            'Register Employee',
             style: TextStyle(
-              color: Colors.black,
+              color: ColorTheme.blackFont,
               fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: ColorTheme.white,
+          centerTitle: true,
+          iconTheme: IconThemeData(color: ColorTheme.blackFont),
         ),
         body: SafeArea(
           child: Column(
             children: [
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: ColorTheme.primary,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(24),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: 20),
-
-                          // Profile Image Upload Section
-                          Center(
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: 120,
-                                  height: 120,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 3,
-                                    ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: ColorTheme.grey,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: ColorTheme.primary,
+                                    width: 3,
                                   ),
-                                  child: _foto != null
-                                      ? ClipOval(
-                                          child: Image.network(
-                                            _foto!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      : const Icon(
-                                          Icons.person,
-                                          size: 80,
-                                          color: Colors.grey,
+                                ),
+                                child: _foto != null
+                                    ? ClipOval(
+                                        child: Image.network(
+                                          _foto!,
+                                          fit: BoxFit.cover,
                                         ),
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 20,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.camera_alt,
-                                        color: ColorTheme.primary,
+                                      )
+                                    : Icon(
+                                        Icons.person,
+                                        size: 80,
+                                        color: ColorTheme.white,
                                       ),
-                                      onPressed: _isLoading
-                                          ? null
-                                          : _pickAndUploadImage,
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: CircleAvatar(
+                                  backgroundColor: ColorTheme.primary,
+                                  radius: 20,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.camera_alt,
+                                      color: ColorTheme.white,
                                     ),
+                                    onPressed:
+                                        _isLoading ? null : _pickAndUploadImage,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 32),
-
-                          // Form Fields
-                          Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                        ),
+                        const SizedBox(height: 32),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
                                 TextFormField(
@@ -348,7 +345,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             },
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
-                                                  ColorTheme.primary,
+                                                  ColorTheme.blackFont,
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                 vertical: 16,
@@ -371,8 +368,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

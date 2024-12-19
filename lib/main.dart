@@ -6,7 +6,7 @@ import 'package:seam_flutter/firebase_options.dart';
 import 'package:seam_flutter/screens/admin/admin_layout.dart';
 import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
 import 'package:seam_flutter/screens/auth/login_screen.dart';
-import 'package:seam_flutter/screens/auth/register_screen.dart';
+import 'package:seam_flutter/screens/admin/employee/create.dart';
 import 'package:seam_flutter/screens/pegawai/pegawai_layout.dart';
 
 void main() async {

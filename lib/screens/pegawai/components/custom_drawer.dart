@@ -3,12 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_event.dart';
 import 'package:seam_flutter/screens/admin/chat/chat.dart';
-import 'package:seam_flutter/screens/admin/growth/index.dart';
 import 'package:seam_flutter/screens/admin/humidity/kelembapan_screen.dart';
 import 'package:seam_flutter/screens/admin/maps/map_screen.dart';
-import 'package:seam_flutter/screens/admin/employee/index.dart';
 import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
-import 'package:seam_flutter/screens/admin/spend/index.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -102,41 +99,6 @@ class CustomDrawer extends StatelessWidget {
                       children: [
                         ListTile(
                           leading: Icon(
-                            Icons.monitor_heart_outlined,
-                            color: ColorTheme.blackFont,
-                          ),
-                          title: Text(
-                            'Log Humidity',
-                            style: TextStyle(color: ColorTheme.blackFont),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const KelembapanScreen()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.paypal_rounded,
-                            color: ColorTheme.blackFont,
-                          ),
-                          title: Text(
-                            'Transaction',
-                            style: TextStyle(color: ColorTheme.blackFont),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => IndexScreen()),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(
                             Icons.chat,
                             color: ColorTheme.blackFont,
                           ),
@@ -170,58 +132,6 @@ class CustomDrawer extends StatelessWidget {
                             ));
                           },
                         ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(
-                            Icons.emoji_people,
-                            color: ColorTheme.blackFont,
-                          ),
-                          title: Text(
-                            'Employee',
-                            style: TextStyle(color: ColorTheme.blackFont),
-                          ),
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return PegawaiScreen();
-                              },
-                            ));
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.area_chart_rounded,
-                            color: ColorTheme.blackFont,
-                          ),
-                          title: Text(
-                            'Growth Records',
-                            style: TextStyle(color: ColorTheme.blackFont),
-                          ),
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return AdminPencatatanIndexPage();
-                              },
-                            ));
-                          },
-                        ),
-                        ListTile(
-                          leading: Icon(
-                            Icons.add_shopping_cart_outlined,
-                            color: ColorTheme.blackFont,
-                          ),
-                          title: Text(
-                            'Spend',
-                            style: TextStyle(color: ColorTheme.blackFont),
-                          ),
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) {
-                                return AdminSpendIndexPage();
-                              },
-                            ));
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -232,8 +142,8 @@ class CustomDrawer extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Logout'),
                             backgroundColor: ColorTheme.white,
+                            title: const Text('Logout'),
                             content:
                                 const Text('Are you sure you want to logout?'),
                             actions: [

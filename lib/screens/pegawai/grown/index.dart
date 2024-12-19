@@ -73,7 +73,7 @@ class _PencatatanIndexPageState extends State<PencatatanIndexPage> {
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  'Grown History',
+                                  'Growth Records',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
