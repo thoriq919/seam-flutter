@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'index_screen.dart'; // Import the index screen
+import 'index_screen.dart';
 
 class PenjualanScreen extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class PenjualanScreen extends StatefulWidget {
 }
 
 class _PenjualanScreenState extends State<PenjualanScreen> {
-  late WebViewController _controller;
+  late final WebViewController _webViewController;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -109,15 +109,46 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
             appBar: AppBar(
               title: Text('Payment'),
             ),
-            body: WebView(
-              initialUrl: snapUrl,
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: (controller) {
-                _controller = controller;
-              },
-              navigationDelegate: (NavigationRequest request) {
-                return NavigationDecision.navigate;
-              },
+            body: WebViewWidget(
+              controller: WebViewController()
+                ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                ..loadRequest(Uri.parse(snapUrl))
+                ..setNavigationDelegate(
+                  NavigationDelegate(
+                    onNavigationRequest: (NavigationRequest request) {
+                      if (request.url.contains(
+                          'https://app.sandbox.midtrans.com/snap/v1/')) {
+                        if (request.url.contains('status_code=200')) {
+                          saveTransactionToFirestore(
+                            name: name,
+                            orderId: orderId,
+                            amount: amount,
+                            total: quantityKg,
+                            status: 'success',
+                          );
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Payment Successful!')),
+                          );
+                        } else if (request.url.contains('status_code=201')) {
+                          saveTransactionToFirestore(
+                            name: name,
+                            orderId: orderId,
+                            amount: amount,
+                            total: quantityKg,
+                            status: 'pending',
+                          );
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Payment Pending!')),
+                          );
+                        }
+                        return NavigationDecision.prevent;
+                      }
+                      return NavigationDecision.navigate;
+                    },
+                  ),
+                ),
             ),
           ),
         ),
@@ -208,18 +239,18 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  // Wrap button to prevent unbounded constraints
                   child: ElevatedButton(
                     onPressed: startPayment,
                     child: Text('Pay Now'),
                   ),
                 ),
+                SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: saveTransaction,
                     child: Text('Save Transaction'),
                   ),
-                )
+                ),
               ],
             ),
           ],
