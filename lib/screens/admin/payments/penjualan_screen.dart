@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:seam_flutter/screens/utils/color_theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'index_screen.dart';
@@ -190,19 +191,27 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorTheme.white,
       appBar: AppBar(
-        title: Text('Midtrans Payment'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.list),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => IndexScreen()),
-              );
-            },
+        title: Text(
+          'Midtrans Payment',
+          style: TextStyle(
+              color: ColorTheme.blackFont,
+              fontWeight: FontWeight.bold,
+              fontSize: 16),
+        ),
+        backgroundColor: ColorTheme.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: ColorTheme.blackFont,
           ),
-        ],
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -240,15 +249,30 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorTheme.white,
+                    ),
                     onPressed: startPayment,
-                    child: Text('Pay Now'),
+                    child: Text(
+                      'Pay Now',
+                      style: TextStyle(color: ColorTheme.blackFont),
+                    ),
                   ),
                 ),
                 SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorTheme.blackFont,
+                    ),
                     onPressed: saveTransaction,
-                    child: Text('Save Transaction'),
+                    child: Text(
+                      'Save',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: ColorTheme.white,
+                      ),
+                    ),
                   ),
                 ),
               ],

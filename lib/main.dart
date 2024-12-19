@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seam_flutter/blocs/auth/auth_bloc.dart';
 import 'package:seam_flutter/firebase_options.dart';
 import 'package:seam_flutter/screens/admin/admin_layout.dart';
-import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
+import 'package:seam_flutter/screens/admin/payments/index_screen.dart';
 import 'package:seam_flutter/screens/auth/login_screen.dart';
 import 'package:seam_flutter/screens/admin/employee/create.dart';
 import 'package:seam_flutter/screens/pegawai/pegawai_layout.dart';

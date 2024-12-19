@@ -5,7 +5,7 @@ import 'package:seam_flutter/blocs/auth/auth_event.dart';
 import 'package:seam_flutter/screens/admin/chat/chat.dart';
 import 'package:seam_flutter/screens/admin/humidity/kelembapan_screen.dart';
 import 'package:seam_flutter/screens/admin/maps/map_screen.dart';
-import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
+import 'package:seam_flutter/screens/admin/payments/index_screen.dart';
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class CustomDrawer extends StatelessWidget {

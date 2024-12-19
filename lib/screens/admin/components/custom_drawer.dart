@@ -7,12 +7,9 @@ import 'package:seam_flutter/screens/admin/growth/index.dart';
 import 'package:seam_flutter/screens/admin/humidity/kelembapan_screen.dart';
 import 'package:seam_flutter/screens/admin/maps/map_screen.dart';
 import 'package:seam_flutter/screens/admin/employee/index.dart';
-import 'package:seam_flutter/screens/admin/penjualan/index_screen.dart';
-<<<<<<< HEAD
+import 'package:seam_flutter/screens/admin/payments/index_screen.dart';
 import 'package:seam_flutter/screens/admin/spend/index.dart';
-=======
 import 'package:seam_flutter/screens/admin/webview/soil_sensor.dart';
->>>>>>> 637407c987534479377e7b2bf610bf4004566bb3
 import 'package:seam_flutter/screens/utils/color_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -174,7 +171,6 @@ class CustomDrawer extends StatelessWidget {
                             ));
                           },
                         ),
-<<<<<<< HEAD
                         Divider(),
                         ListTile(
                           leading: Icon(
@@ -183,21 +179,11 @@ class CustomDrawer extends StatelessWidget {
                           ),
                           title: Text(
                             'Employee',
-=======
-                        ListTile(
-                          leading: Icon(
-                            Icons.grass,
-                            color: ColorTheme.blackFont,
-                          ),
-                          title: Text(
-                            'Soil Sensor',
->>>>>>> 637407c987534479377e7b2bf610bf4004566bb3
                             style: TextStyle(color: ColorTheme.blackFont),
                           ),
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
-<<<<<<< HEAD
                                 return PegawaiScreen();
                               },
                             ));
@@ -233,9 +219,23 @@ class CustomDrawer extends StatelessWidget {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return AdminSpendIndexPage();
-=======
+                              },
+                            ));
+                          },
+                        ),
+                        ListTile(
+                          leading: Icon(
+                            Icons.sensors_rounded,
+                            color: ColorTheme.blackFont,
+                          ),
+                          title: Text(
+                            'Soil Moisture Sensors',
+                            style: TextStyle(color: ColorTheme.blackFont),
+                          ),
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
                                 return SoilSensor();
->>>>>>> 637407c987534479377e7b2bf610bf4004566bb3
                               },
                             ));
                           },

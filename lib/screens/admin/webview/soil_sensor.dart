@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seam_flutter/screens/utils/color_theme.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SoilSensor extends StatefulWidget {
@@ -24,7 +25,24 @@ class _SoilSensorState extends State<SoilSensor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorTheme.white,
+        title: Text(
+          "Soil Sensor",
+          style: TextStyle(
+              color: ColorTheme.blackFont,
+              fontWeight: FontWeight.bold,
+              fontSize: 16),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: ColorTheme.blackFont,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: WebViewWidget(controller: _controller),
     );
