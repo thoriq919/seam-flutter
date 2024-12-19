@@ -15,7 +15,7 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final String midtransClientKey = 'SB-Mid-client-u2hWFx0vEzoGFzqS';
+  final String midtransClientKey = 'SB-Mid-server-RyxvpqiZ4B58BNp8anchaTFr';
   final String midtransBaseUrl =
       'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
@@ -95,6 +95,13 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
     final snapUrl = await createTransaction(orderId: orderId, amount: amount);
 
     if (snapUrl != null) {
+      saveTransactionToFirestore(
+        name: name,
+        orderId: orderId,
+        amount: amount,
+        total: quantityKg,
+        status: 'success',
+      );
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -109,35 +116,6 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
                 _controller = controller;
               },
               navigationDelegate: (NavigationRequest request) {
-                if (request.url
-                    .contains('https://app.sandbox.midtrans.com/snap/v1/')) {
-                  if (request.url.contains('status_code=200')) {
-                    saveTransactionToFirestore(
-                      name: name,
-                      orderId: orderId,
-                      amount: amount,
-                      total: quantityKg,
-                      status: 'success',
-                    );
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Payment Successful!')),
-                    );
-                  } else if (request.url.contains('status_code=201')) {
-                    saveTransactionToFirestore(
-                      name: name,
-                      orderId: orderId,
-                      amount: amount,
-                      total: quantityKg,
-                      status: 'pending',
-                    );
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Payment Pending!')),
-                    );
-                  }
-                  return NavigationDecision.prevent;
-                }
                 return NavigationDecision.navigate;
               },
             ),
