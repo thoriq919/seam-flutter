@@ -15,7 +15,7 @@ class _PenjualanScreenState extends State<PenjualanScreen> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final String midtransClientKey = 'SB-Mid-client-u2hWFx0vEzoGFzqS';
+  final String midtransClientKey = 'midtrans-key';
   final String midtransBaseUrl =
       'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
